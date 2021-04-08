@@ -1,0 +1,26 @@
+{
+  "name": "peico-free",
+  "version": "1.0.0",
+  "description": "Free Verson Of Peico Link Shortner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hrichiksite/peico-free.git"
+  },
+  "author": "Hrichik Mazumder",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/hrichiksite/peico-free/issues"
+  },
+  "homepage": "https://github.com/hrichiksite/peico-free#readme",
+  "dependencies": {
+    "@sentry/node": "^6.2.5",
+    "@sentry/tracing": "^6.2.5",
+    "express": "^4.17.1",
+    "redis": "^3.1.0",
+    "safe-browse-url-lookup": "^0.1.1"
+  }
+}
