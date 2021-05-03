@@ -7,6 +7,7 @@ const client = redis.createClient({
 const lookup = require('safe-browse-url-lookup')({ apiKey: 'AIzaSyDgjoHEfUjfZeIlUGOFEgCRdNKUmGNSlb8' });
 
 
+
 client.auth(process.env.REDISPASSWORD);
 
 client.on('error', err => {
@@ -19,7 +20,7 @@ const { json } = require('express');
  const Sentry = require('@sentry/node');
  const Tracing = require("@sentry/tracing");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 Sentry.init({
   dsn: "https://b83f7f6951c2496fa4cccad12a30ca34@o561321.ingest.sentry.io/5710687",
@@ -60,15 +61,30 @@ app.get('/', async (req, res) => {
     res.status(302).send();             
 })
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-    throw new Error("My first Sentry error!");
-  });
-
   app.get('/favicon.ico', async (req, res) => {
   res.send("favicon.ico");
               })
 
 app.get('/add', async (req, res) => {
+  var id = req.header['X-Real-IP'];
+  var limit = new Limiter({ id: id, db: client });
+  limit.get(function(err, limit){
+    if (err) return next(err);
+   
+    res.set('X-RateLimit-Limit', limit.total);
+    res.set('X-RateLimit-Remaining', limit.remaining - 1);
+    res.set('X-RateLimit-Reset', limit.reset);
+   
+    // all good
+    if (limit.remaining) return next();
+   
+    // not good
+    var delta = (limit.reset * 1000) - Date.now() | 0;
+    var after = limit.reset - (Date.now() / 1000) | 0;
+    res.set('Retry-After', after);
+    res.send(429, 'Rate limit exceeded, retry in ' + ms(delta, { long: true }));
+  });
+
     var murl = req.query.url;
     res.setHeader('Access-Control-Allow-Origin', 'https://s.peico.xyz')
     res.setHeader('Access-Control-Allow-Methods', 'GET')

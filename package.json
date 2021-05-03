@@ -20,6 +20,7 @@
     "@sentry/node": "^6.2.5",
     "@sentry/tracing": "^6.2.5",
     "express": "^4.17.1",
+    "ratelimiter": "^3.4.1",
     "redis": "^3.1.0",
     "safe-browse-url-lookup": "^0.1.1"
   }
