@@ -66,7 +66,8 @@ app.get('/', async (req, res) => {
               })
 
 app.get('/add', async (req, res) => {
-  var id = req.headers['CF-Connecting-IP'];
+  var id = req.header("CF-Connecting-IP");
+  console.log(req.headers);
   console.log(id);
 
   var limit = new Limiter({ id: id, db: client });
