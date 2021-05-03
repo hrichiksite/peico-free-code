@@ -5,6 +5,7 @@ const client = redis.createClient({
  password:process.env.REDISPASSWORD
 });
 const lookup = require('safe-browse-url-lookup')({ apiKey: 'AIzaSyDgjoHEfUjfZeIlUGOFEgCRdNKUmGNSlb8' });
+const Limiter = require("ratelimiter");
 
 
 client.auth(process.env.REDISPASSWORD);
