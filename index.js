@@ -7,7 +7,6 @@ const client = redis.createClient({
 const lookup = require('safe-browse-url-lookup')({ apiKey: 'AIzaSyDgjoHEfUjfZeIlUGOFEgCRdNKUmGNSlb8' });
 
 
-
 client.auth(process.env.REDISPASSWORD);
 
 client.on('error', err => {
