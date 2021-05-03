@@ -72,14 +72,14 @@ app.get('/add', async (req, res) => {
 
   var limit = new Limiter({ id: id, db: client });
   limit.get(function(err, limit){
-    if (err) return next(err);
+    if (err) throw new Error(err);
    
     res.set('X-RateLimit-Limit', limit.total);
     res.set('X-RateLimit-Remaining', limit.remaining - 1);
     res.set('X-RateLimit-Reset', limit.reset);
    
     // all good
-    if (limit.remaining) return next();
+    if (limit.remaining) return null;
    
     // not good
     var delta = (limit.reset * 1000) - Date.now() | 0;
