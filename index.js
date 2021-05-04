@@ -1,14 +1,14 @@
 const redis = require("redis");
 const client = redis.createClient({
- url:process.env.REDIS_URL,
- user:process.env.REDISUSER,
- password:process.env.REDISPASSWORD
+ url:process.env.REDIS_URL||"redis://default:I3bXFEgAE2ADbHL9DzWY@containers-us-west-5.railway.app:7360",
+ user:process.env.REDISUSER||"default",
+ password:process.env.REDISPASSWORD||"I3bXFEgAE2ADbHL9DzWY"
 });
 const lookup = require('safe-browse-url-lookup')({ apiKey: 'AIzaSyDgjoHEfUjfZeIlUGOFEgCRdNKUmGNSlb8' });
 const Limiter = require("ratelimiter");
 
 
-client.auth(process.env.REDISPASSWORD);
+client.auth(process.env.REDISPASSWORD||"I3bXFEgAE2ADbHL9DzWY");
 
 client.on('error', err => {
   console.log('Redis-Error ' + err);
@@ -116,7 +116,7 @@ app.get('/add', async (req, res) => {
 }} else { 
   res.send('<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><b>This is the API endpoint for only Peico Free Basic</b>');
  }
-            })
+            })})
 
 app.get('/:tag', async (req, res) => {
             var tag = req.params.tag;
