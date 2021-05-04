@@ -115,7 +115,7 @@ app.get('/add', async (req, res) => {
     var delta = (limit.reset * 1000) - Date.now() | 0;
     var after = limit.reset - (Date.now() / 1000) | 0;
     res.set('Retry-After', after);
-    res.send(429, 'Rate limit exceeded, retry in ' + ms(delta, { long: true }));
+    res.send(429, 'Rate limit exceeded, retry in ' + delta);
 
  
 });
