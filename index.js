@@ -79,47 +79,43 @@ app.get('/add', async (req, res) => {
     res.set('X-RateLimit-Reset', limit.reset);
    
     // all good
-    if (limit.remaining){
-      var murl = req.query.url;
-      res.setHeader('Access-Control-Allow-Origin', 'https://s.peico.xyz')
-      res.setHeader('Access-Control-Allow-Methods', 'GET')
-      if (murl != null && murl != undefined) {
-          if(murl.includes("peico.xyz")){
-           res.status(404).send("You can't shorten a already shortened URL. Error Code 001");
-          } else {
-          lookup.checkSingle(murl).then(async isMalicious => {
-           if(isMalicious){
-             res.status(403).send("This URL seems Evil. Error Code 003 ");
-           } else {
-             var tag = Math.random().toString(36).toUpperCase().substr(3, 5);  
-             var arr = [murl, 0,0,0]
-             var arrd = JSON.stringify(arr)
-             client.set(tag, arrd,  (err, reply)=>{
-                 console.log(err)
-              if(err === null){
-                  res.send(tag);
-               } else {
-                  res.status(500).send("Opps, something went wrong! Error Code 004");
-               } 
-          })
-          };
-     }).catch(err => {
-             res.status(502).send("Opps, something went wrong! Error Code 002 ");
-     })
-  }} else { 
-    res.send('<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><b>This is the API endpoint for only Peico Free Basic</b>');
-   }
-    }
+    if (limit.remaining) return null;
    
     // not good
     var delta = (limit.reset * 1000) - Date.now() | 0;
     var after = limit.reset - (Date.now() / 1000) | 0;
     res.set('Retry-After', after);
-    res.send(429, 'Rate limit exceeded, retry in ' + delta);
+    res.send(429, 'Rate limit exceeded, retry in ' + ms(delta, { long: true }));
 
- 
-});
-
+    var murl = req.query.url;
+    res.setHeader('Access-Control-Allow-Origin', 'https://s.peico.xyz')
+    res.setHeader('Access-Control-Allow-Methods', 'GET')
+    if (murl != null && murl != undefined) {
+        if(murl.includes("peico.xyz")){
+         res.status(404).send("You can't shorten a already shortened URL. Error Code 001");
+        } else {
+        lookup.checkSingle(murl).then(async isMalicious => {
+         if(isMalicious){
+           res.status(403).send("This URL seems Evil. Error Code 003 ");
+         } else {
+           var tag = Math.random().toString(36).toUpperCase().substr(3, 5);  
+           var arr = [murl, 0,0,0]
+           var arrd = JSON.stringify(arr)
+           client.set(tag, arrd,  (err, reply)=>{
+               console.log(err)
+            if(err === null){
+                res.send(tag);
+             } else {
+                res.status(500).send("Opps, something went wrong! Error Code 004");
+             } 
+        })
+        };
+   }).catch(err => {
+           res.status(502).send("Opps, something went wrong! Error Code 002 ");
+   })
+}} else { 
+  res.send('<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><b>This is the API endpoint for only Peico Free Basic</b>');
+ }
             })
 
 app.get('/:tag', async (req, res) => {
